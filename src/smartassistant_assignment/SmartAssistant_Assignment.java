@@ -52,15 +52,15 @@ public class SmartAssistant_Assignment {
             lineNumber++;
         }
 
-        
-        DecimalFormat dec = new DecimalFormat();
-        DecimalFormatSymbols decFS = new DecimalFormatSymbols();
-        
-        decFS.setDecimalSeparator('.');
-        
-        //dec.setGroupingUsed(false);
-        dec.setDecimalFormatSymbols(decFS);
-        
+        /*
+         DecimalFormat dec = new DecimalFormat();
+         DecimalFormatSymbols decFS = new DecimalFormatSymbols();
+
+         decFS.setDecimalSeparator('.');
+
+         dec.setGroupingUsed(false);
+         */
+        //dec.setDecimalFormatSymbols(decFS);
         NumberFormat format = NumberFormat.getInstance();
         Number number;
 
@@ -74,20 +74,26 @@ public class SmartAssistant_Assignment {
                     //DecimalFormat dec = new DecimalFormat(temp.get(l), decFS);
                     //System.out.println("Line: " + i + " : " + l + " : " + temp.get(l));
                     //change the decimal mark here, not by replaceAll(",", ".")
-                    
+
                     //then, erase non-numeric values
-                    temp.set(l,temp.get(l).replaceAll("[^0-9.,]", ""));
-                    
-                    //Erase grouping marks, set the decimal marks as dot
-                    
-                    
-                    number = format.parse(temp.get(l));
-                    Double d = number.doubleValue();
-                    temp.set(l,dec.format(d));
-                    
-                    System.out.println(temp.get(l));
-                    
-                    
+                    //temp.set(l,temp.get(l).replaceAll(",", "."));
+                    temp.set(l, temp.get(l).replaceAll("[^0-9.,]", ""));
+
+                    //Erase grouping marks, set the decimal marks as dot                   
+                    System.out.println(temp.get(l) + " :Beginning");
+                    /*
+                     number = format.parse(temp.get(l));
+                     Double d = number.doubleValue();
+                     temp.set(l, dec.format(d));
+                     */
+
+                    temp.set(l, temp.get(l).replaceAll(",", "."));
+                    System.out.println(temp.get(l) + " :Befor parsing");
+                    NumberFormat formatter = new DecimalFormat("######.##");
+                    number = formatter.parse(temp.get(l));
+
+                    System.out.println(number);
+
                     //System.out.println("Line: " + i + " : " + l + " : " + temp.get(l).replaceAll("[^0-9.,]", ""));
                 } else {
                     //System.out.println("Line: " + i + " : " + l + " : " + temp.get(l));
