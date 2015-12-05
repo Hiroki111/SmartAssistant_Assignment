@@ -48,42 +48,59 @@ public class SmartAssistant_Assignment {
             ArrayList<String> temp = content.get(i);
             for (int l = 0; l < temp.size(); l++) {
                 System.out.println("Row: " + i + " Col: " + l + " : " + temp.get(l));
-            }            
+            }
         }
-        
-        
+
         //Applly the transforamtion and put the modified data into an ArrayList, not a matrix
-        ArrayList<String> output = new ArrayList<>();
-        final String columnNames ="'nane'|'offerurl'|'price'|'published'|'description'";        
-        output.set(0, columnNames);
-        
-         ArrayList<String> temp = new ArrayList<>();
-        
+        String[] output = new String[content.size()];
+        final String columnNames = "'nane'|'offerurl'|'price'|'published'|'description'";
+        output[0] = columnNames;
+
+        ArrayList<String> temp = new ArrayList<>();
+
         //Iterate the rows, except the first row (i.e. column names)
         for (int i = 1; i < content.size(); i++) {
+            //temp contains the whole information of one single product
             temp = content.get(i);
 
-            //Iterate the columns (i.e. each cell)
+            //Iterate each cell in the same row (i.e. each product)
             for (int l = 0; l < temp.size(); l++) {
-                
-                if(l == 0){
-                    
+                String product = "";
+
+                switch (l) {
+                    case 0://Name
+                        product = "'" + temp.get(l) + "'|";
+                        break;
+                    case 1://Link
+                        product = product + "'" + temp.get(l) + "?id=";
+                        break;
+                    case 2://SKU
+                        product = product + temp.get(l) + "'|";
+                        break;
+                    case 3://Selling-Price
+                        product = product + "'" + changePriceFormat(temp.get(l)) + "'|";
+                        break;
+                    case 4://description
+                        String[] dateAndFormat = getDateAndFormat(temp.get(l));
+                        if (dateAndFormat[0] == "") {
+                            //This is when both "published" will be empty
+                            product = "|'" + temp.get(l) + "'";
+                        }else if(dateAndFormat[1] == "mm/dd/yyyy"){
+                            //The format needs to be changed from "mm/dd/yyyy" to "dd/mm/yyyy"
+                        
+                        }
+                        product = "'" + temp.get(l) + "'";
+                        break;
+                    default:
+                        product = "invalid information was detected : " + l;
+                        break;
+
                 }
-                
-                /*
-                //Modify the price format
-                if (i != 0 && l == 3) {
-                    String price = changePriceFormat(temp.get(l));
-                    //Set the resulting price in the expected format
-                    temp.set(l, price);
-                }
-*/
-                
+
                 System.out.println("Row: " + i + " Col: " + l + " : " + temp.get(l));
             }
 
         }
-
 
     }
 
@@ -112,7 +129,7 @@ public class SmartAssistant_Assignment {
         return price;
     }
 
-    public String[] getDateAndFormat(String description) {
+    public static String[] getDateAndFormat(String description) {
         String[] date = {"", ""};
         String DATE_REGEX1 = "([1-9]|0[1-9]|1[012])[-.](0[1-9]|[12][0-9]|3[01])[-.](19|20)\\d\\d";//mm/dd/yyyy
         String DATE_REGEX2 = "(0[1-9]|[12][0-9]|3[01])[-.]([1-9]|0[1-9]|1[012])[-.](19|20)\\d\\d";//dd/mm/yyyy
