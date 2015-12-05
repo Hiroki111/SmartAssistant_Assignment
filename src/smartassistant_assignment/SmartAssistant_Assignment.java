@@ -8,16 +8,12 @@ package smartassistant_assignment;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -52,64 +48,67 @@ public class SmartAssistant_Assignment {
             lineNumber++;
         }
 
-        /*
-         DecimalFormat dec = new DecimalFormat();
-         DecimalFormatSymbols decFS = new DecimalFormatSymbols();
-
-         decFS.setDecimalSeparator('.');
-
-         dec.setGroupingUsed(false);
-         */
-        //dec.setDecimalFormatSymbols(decFS);
-        NumberFormat format = NumberFormat.getInstance();
-        Number number;
-
         //See the content
         for (int i = 0; i < content.size(); i++) {
             ArrayList<String> temp = content.get(i);
 
             for (int l = 0; l < temp.size(); l++) {
 
+                //Modify the price format
                 if (i != 0 && l == 3) {
-                    //DecimalFormat dec = new DecimalFormat(temp.get(l), decFS);
-                    //System.out.println("Line: " + i + " : " + l + " : " + temp.get(l));
-                    //change the decimal mark here, not by replaceAll(",", ".")
-
-                    //then, erase non-numeric values
-                    //temp.set(l,temp.get(l).replaceAll(",", "."));
+                    //Erase non-numeric values other than "." and "," (e.g. USD or EUR)
                     temp.set(l, temp.get(l).replaceAll("[^0-9.,]", ""));
 
-                    //Erase grouping marks, set the decimal marks as dot                   
-                    System.out.println(temp.get(l) + " :Beginning");
-                    /*
-                     number = format.parse(temp.get(l));
-                     Double d = number.doubleValue();
-                     temp.set(l, dec.format(d));
-                     */
-
+                    //Then, replace "," with "."
                     temp.set(l, temp.get(l).replaceAll(",", "."));
-                    System.out.println(temp.get(l) + " :Befor parsing");
-                    NumberFormat formatter = new DecimalFormat("######.##");
-                    number = formatter.parse(temp.get(l));
 
-                    System.out.println(number);
+                    //Split the value by each dot
+                    String tempArray[] = temp.get(l).split("\\.");
+                    StringBuilder test = new StringBuilder();
 
-                    //System.out.println("Line: " + i + " : " + l + " : " + temp.get(l).replaceAll("[^0-9.,]", ""));
-                } else {
-                    //System.out.println("Line: " + i + " : " + l + " : " + temp.get(l));
+                    //Remove all the unnecessary dots
+                    if (tempArray.length >= 2) {
+                        for (int x = 0; x < (tempArray.length - 1); x++) {
+                            test.append(tempArray[x]);
+                        }
+                        test.append(".");
+                    }
+                    test.append(tempArray[tempArray.length - 1]);
+
+                    //Set the resulting price in the expected format
+                    temp.set(l, test.toString());
                 }
-                //System.out.println("Line: " + i + " : " + l + " : " + temp.get(l));
 
+                //Detect date
+                if (i != 0 && l == 4) {
+                    System.out.println("Line: " + i + " : " + l + " : " + temp.get(l));
+                }
+
+                //System.out.println("Line: " + i + " : " + l + " : " + temp.get(l));
             }
 
         }
 
-        /*
-         while((line = br.readLine()) != null) {
-         String[] temp = line.split(cvsSplitBy);
-         System.out.println(temp[0] + " ; " + temp[1] + " ; " + temp[2] + " ; " + temp[3] + " ; " + temp[4]);
-         }
-         */
+        
+    }
+
+    public String[] getDateAndFormat(String description) {
+        String[] date = {"",""};
+        String DATE_REGEX1 = "([1-9]|0[1-9]|1[012])[-.](0[1-9]|[12][0-9]|3[01])[-.](19|20)\\d\\d";//mm/dd/yyyy
+        String DATE_REGEX2 = "(0[1-9]|[12][0-9]|3[01])[-.]([1-9]|0[1-9]|1[012])[-.](19|20)\\d\\d";//dd/mm/yyyy
+
+        Matcher m1 = Pattern.compile(DATE_REGEX1).matcher(description);
+        Matcher m2 = Pattern.compile(DATE_REGEX2).matcher(description);
+
+        if (m1.find()) {
+            date[0] = m1.group();
+            date[1] = "mm/dd/yyyy";
+        }else if(m2.find()){
+            date[0] = m2.group();
+            date[1] = "dd/mm/yyyy";            
+        }
+
+        return date;
     }
 
 }
