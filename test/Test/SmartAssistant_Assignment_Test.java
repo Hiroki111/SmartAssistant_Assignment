@@ -28,7 +28,7 @@ public class SmartAssistant_Assignment_Test {
     // The methods must be annotated with annotation @Test. For example:
     //
     @Test
-    public void SmartA() {
+    public void TestGetDateAndFormat() {
         SmartAssistant_Assignment tester = new SmartAssistant_Assignment();
         String[] dummy = {"dummyDate","dummyFormat"};
         
@@ -58,5 +58,46 @@ public class SmartAssistant_Assignment_Test {
         System.out.println("Date: " + dummy[0] + " Format: " + dummy[1]);
     }
     
+    @Test
+    public void TestChangePriceFormat(){
+        SmartAssistant_Assignment tester = new SmartAssistant_Assignment();
+        
+        String dummy = "";
+        
+        dummy = tester.changePriceFormat("USD 1,232.99");
+        assertEquals(dummy, "1232.99");
+        System.out.println(dummy);
     
+        dummy = tester.changePriceFormat("USD 8654.56");
+        assertEquals(dummy, "8654.56");
+        System.out.println(dummy);
+        
+        dummy = tester.changePriceFormat("345,99 [euro symbole]");
+        assertEquals(dummy, "345.99");
+        System.out.println(dummy);
+    
+        dummy = tester.changePriceFormat("EUR 1255,59");
+        assertEquals(dummy, "1255.59");
+        System.out.println(dummy);
+        
+        dummy = tester.changePriceFormat("$34.00");
+        assertEquals(dummy, "34.00");
+        System.out.println(dummy);
+    
+        dummy = tester.changePriceFormat("431.333,0 EUR");
+        assertEquals(dummy, "431333.0");
+        System.out.println(dummy);
+        
+        dummy = tester.changePriceFormat("34,99");
+        assertEquals(dummy, "34.99");
+        System.out.println(dummy);
+        
+        dummy = tester.changePriceFormat("234.99");
+        assertEquals(dummy, "234.99");
+        System.out.println(dummy);
+    
+        dummy = tester.changePriceFormat("42");
+        assertEquals(dummy, "42");
+        System.out.println(dummy);
+    }
 }
